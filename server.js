@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import exphbs from "express-handlebars";
 import bodyParser from "body-parser";
+import { __dirname } from "./consts/uploadPath.js";
 
 import { newFile } from "./func/fileMenagment.js"
 
@@ -27,13 +28,13 @@ const context = {
 }
 
 app.get("/", function (req, res) {
-    newFile("plik")
-    // deleteFile("plik.txt")
     res.render('home.hbs', context);
 })
 
-app.get("/form", function (req, res) {
-    res.render('form.hbs', context);
+app.post("/files/add", function (req, res) {
+    
+
+    res.redirect("/");
 })
 
 app.post("/post", function (req, res) {

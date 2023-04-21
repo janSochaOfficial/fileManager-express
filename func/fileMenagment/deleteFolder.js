@@ -1,6 +1,6 @@
 import { rmdir } from 'fs/promises';
 import path from 'path';
-import { uploadPath } from '../../consts/uploadPath';
+import { uploadPath } from '../../consts/uploadPath.js';
 
 export async function deleteFolder(folderName, folderPath = ""){
     try{

@@ -1,5 +1,6 @@
-export { isInFolder } from './fileMenagment/isInFolder';
-export { deleteFile } from './fileMenagment/deleteFile';
-export { deleteFolder } from './fileMenagment/deleteFolder';
-export { newFile } from './fileMenagment/newFile';
-export { newFolder } from './fileMenagment/newFolder';
+export { isInFolder } from './fileMenagment/isInFolder.js';
+export { deleteFile } from './fileMenagment/deleteFile.js';
+export { deleteFolder } from './fileMenagment/deleteFolder.js';
+export { newFile } from './fileMenagment/newFile.js';
+export { newFolder } from './fileMenagment/newFolder.js';
+export { getFiles } from './fileMenagment/getFiles.js';

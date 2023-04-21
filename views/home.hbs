@@ -1,7 +1,63 @@
+<header>
+    <h1 id="titile">FileManager</h1>
+</header>
+
 <main>
-    <ul>
-    {{#each list}}
-        <li>{{this}}</li>
-    {{/each}}
-    </ul>
+    <div class="sidePannel">
+        <button class="btn" id="new-folder-btn">New Folder</button>
+        <button class="btn" id="new-file-btn">New txt file</button>
+        <form action="/files/upload" method="POST">
+            <label for="file-upload"></label>
+            <input type="file" name="file" id="file-upload">
+            <button type="submit">OK</button>
+        </form>
+    </div>
+    <div class="mainContent">
+        <div class="folders container">
+            {{#each folders}}
+            <div class="folder tile">
+                <form action="/folders/delete" method="POST">
+                    <img src="" alt="folder Icon" class="ico">
+                    <button type="submit">x</button>
+                    <p>{{name}}</p>
+                    <input type="hidden" name="name" value="{{name}}">
+                </form>
+            </div>
+            {{/each}}
+        </div>
+        <div class="files container">
+            {{#each files}}
+            <div class="file tile">
+                <form action="/files/delete" method="POST">
+                    <img src="" alt="folderIcon" class="ico">
+                    <button type="submit">x</button>
+                    <p>{{name}}</p>
+                    <input type="hidden" name="name" value="{{name}}">
+                </form>
+            </div>
+            {{/each}}
+        </div>
+    </div>
 </main>
+
+<aside style="display: inline;">
+    <dialog id="folder-dialog">
+        <form action="/folders/add">
+            <p>Name of new folder: </p>
+            <input type="text" name="name">
+            <button type="submit" class="btn">Ok</button>
+            <button class="btn" id="folder-close-btn" formmethod="dialog">Cancel</button>
+        </form>
+    </dialog>
+    <dialog id="file-dialog">
+        <form action="/files/add">
+            <p>Name of new file: </p>
+            <input type="text" name="name">
+            <button type="submit" class="btn">Ok</button>
+            <button class="btn" id="file-close-btn" formmethod="dialog">Cancel</button>
+        </form>
+    </dialog>
+</aside>
+
+
+<script src="js/dialogHandler.js"></script>

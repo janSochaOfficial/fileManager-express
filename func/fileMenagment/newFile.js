@@ -1,7 +1,7 @@
 import { writeFile } from 'fs/promises';
 import path from 'path';
-import { uploadPath } from '../../consts/uploadPath';
-import { isInFolder } from './isInFolder';
+import { uploadPath } from '../../consts/uploadPath.js';
+import { isInFolder } from './isInFolder.js';
 
 export async function newFile(fileName, folderPath = ""){
     let name = fileName
