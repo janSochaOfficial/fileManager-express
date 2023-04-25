@@ -1,11 +1,15 @@
-import { readdir } from 'fs/promises';
-import path from 'path';
-import { uploadPath } from '../../consts/uploadPath.js';
-import { isInFolder } from './isInFolder.js';
+import { readdir } from "fs/promises";
+import path from "path";
+import { uploadPath } from "../../consts/uploadPath.js";
 
-export async function getFiles(file, folder = "") {
-
-    const data = await readdir(path.join(uploadPath, folder));
-    const files = data.filter(file => file.includes("."));
-    console.log(`files`, files);
+export async function getFiles(folder = "") {
+  const data = await readdir(path.join(uploadPath, folder));
+  const files = data.filter((file) => file.includes("."));
+  return files.map((file) => {
+    return {
+        name: file,
+        extention: file.split(".")[1],
+        type: "file"
+    }
+  });
 }

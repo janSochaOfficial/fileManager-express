@@ -1,10 +1,9 @@
-import { access } from 'fs/promises';
-import { constants } from 'fs';
-import path from 'path';
-import { uploadPath } from '../../consts/uploadPath.js';
+import { readdir } from "fs/promises";
+import { constants } from "fs";
+import path from "path";
+import { uploadPath } from "../../consts/uploadPath.js";
 
 export async function isInFolder(fileName, folderPath = "") {
-    return access(path.join(uploadPath, folderPath, fileName), constants.F_OK)
-        .then(() => true)
-        .catch(() => false)
+  const folder = await readdir(path.join(uploadPath, folderPath));
+  return folder.includes(fileName);
 }

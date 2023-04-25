@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "express": "^4.18.2",
-    "express-handlebars": "^5.3.5"
+    "express-formidable": "^1.2.0",
+    "express-handlebars": "^5.3.5",
+    "formidable": "^1.2.2",
+    "prettier": "^2.8.8"
   },
   "type": "module",
   "name": "nosqldatabase-expressjs",
