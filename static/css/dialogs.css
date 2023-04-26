@@ -1,0 +1,27 @@
+dialog[open] {
+  color: inherit;
+  border: none;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+dialog form {
+  background: #0d161c;
+  border: 4px solid whitesmoke;
+  border-radius: 10px;
+  width: 50vw;
+  min-width: 400px;
+  height: 30vh;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 0 0 60px 5px #ff78eb58;
+}

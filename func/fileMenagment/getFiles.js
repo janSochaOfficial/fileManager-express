@@ -7,9 +7,10 @@ export async function getFiles(folder = "") {
   const files = data.filter((file) => file.includes("."));
   return files.map((file) => {
     return {
-        name: file,
+        name: decodeURIComponent(file),
         extention: file.split(".")[1],
         type: "file"
     }
   });
+  
 }

@@ -6,33 +6,21 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans&display=swap");
 
-@import url("dialogs.css");
-@import url("header.css");
-@import url("maincontent.css");
-@import url("sidepanel.css");
-
 body {
   width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-
+  min-height: 100vh;
   background: #0d161c;
   color: whitesmoke;
   font-family: "Work Sans", sans-serif;
   font-size: 1.3em;
 }
 
-ul {
-  list-style: none;
+main {
+  display: flex;
+  height: calc(100vh - 120px);
+  width: 100%;
 }
 
-button,
-input[type="button"],
-input[type="submit"],
 .btn {
   all: unset;
   font-size: 1rem;
@@ -44,11 +32,8 @@ input[type="submit"],
   transition: all 0.3s;
 }
 
-button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover,
 .btn:hover {
   border-color: lightcoral;
   color: lightcoral;
-  scale: 1.05;
+  scale: 1.02;
 }

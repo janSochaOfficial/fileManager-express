@@ -4,8 +4,8 @@ const fileDialog = document.getElementById("file-dialog");
 const newFileBtn = document.getElementById("new-file-btn");
 const newFolderBtn = document.getElementById("new-folder-btn");
 
-const closeFileBtn = document.getElementById("close-file-btn");
-const closeFolderBtn = document.getElementById("close-folder-btn");
+const closeFileBtn = document.getElementById("file-close-btn");
+const closeFolderBtn = document.getElementById("folder-close-btn");
 
 newFileBtn.addEventListener("click", () => {
   fileDialog.show();

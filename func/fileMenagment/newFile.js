@@ -4,7 +4,7 @@ import { uploadPath } from "../../consts/uploadPath.js";
 import { isInFolder } from "./isInFolder.js";
 
 export async function newFile(fileName, folderPath = "") {
-  let name = fileName;
+  let name = encodeURIComponent(fileName);
   while (await isInFolder(name + ".txt", folderPath)) name += "_kopia";
   try {
     await writeFile(path.join(uploadPath, folderPath, `${name}.txt`), "aa");

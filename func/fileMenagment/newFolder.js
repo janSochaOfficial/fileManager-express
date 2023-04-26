@@ -4,10 +4,9 @@ import { uploadPath } from "../../consts/uploadPath.js";
 import { isInFolder } from "./isInFolder.js";
 
 export async function newFolder(folderName, folderPath = "") {
-  let name = folderName;
+  let name = encodeURIComponent(folderName);
   while (await isInFolder(name, folderPath)) {
     name += "_kopia";
-    console.log("newFolder")
   }
-  await mkdir(path.join(uploadPath, folderPath, folderName));
+  await mkdir(path.join(uploadPath, folderPath, name));
 }

@@ -7,7 +7,7 @@ export async function getFolders(folder = "") {
   const folders = data.filter((file) => !file.includes("."));
   return folders.map((folder) => {
     return {
-      name: folder,
+      name: decodeURIComponent(folder),
       type: "folder"
     }
   });

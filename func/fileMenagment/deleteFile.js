@@ -4,7 +4,7 @@ import { uploadPath } from "../../consts/uploadPath.js";
 
 export async function deleteFile(fileName, folderPath = "") {
   try {
-    await unlink(path.join(uploadPath, folderPath, fileName));
+    await unlink(path.join(uploadPath, folderPath, decodeURIComponent(fileName)));
   } catch {
     console.error("nie usinięto");
   }

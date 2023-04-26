@@ -1,0 +1,46 @@
+#maincontent {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.ico {
+  height: 96px;
+  width: 96px;
+  filter: invert(1);
+}
+
+.tile {
+  height: 120px;
+  width: fit-content;
+  position: relative;
+}
+
+
+.tile button {
+  all: unset;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 1rem;
+  color: inherit;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+
+.tile button:hover {
+  color: lightcoral;
+  scale: 1.02;
+}
