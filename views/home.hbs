@@ -10,6 +10,8 @@
       <label for="file-upload"></label>
       <input type="file" name="file" id="file-upload" />
       <button type="submit">OK</button>
+      <input type="hidden" name="root" value="{{root}}">
+
     </form>
   </div>
   <div id="maincontent">
@@ -21,6 +23,8 @@
             <button type="submit">x</button>
             <p>{{name}}</p>
             <input type="hidden" name="name" value="{{name}}" />
+            <input type="hidden" name="root" value="{{root}}">
+
           </form>
         </div>
       {{/each}}
@@ -34,6 +38,7 @@
             <button type="submit">x</button>
             <p>{{name}}</p>
             <input type="hidden" name="name" value="{{name}}" />
+            <input type="hidden" name="root" value="{{root}}">
           </form>
         </div>
       {{/each}}
@@ -46,6 +51,8 @@
     <form enctype="multipart/form-data" action="/folders/add" method="post">
       <p>Name of new folder: </p>
       <input type="text" name="name" />
+      <input type="hidden" name="root" value="{{root}}">
+
       <button type="submit" class="btn">Ok</button>
       <button
         class="btn"
@@ -58,6 +65,7 @@
     <form action="/files/add" enctype="multipart/form-data" method="post">
       <p>Name of new file: </p>
       <input type="text" name="name" />
+      <input type="hidden" name="root" value="{{root}}">
       <button type="submit" class="btn">Ok</button>
       <button
         class="btn"
@@ -68,4 +76,4 @@
   </dialog>
 </aside>
 
-<script src="js/dialogHandler.js"></script>
+<script src="/js/dialogHandler.js"></script>

@@ -4,8 +4,8 @@ import { uploadPath } from "../../consts/uploadPath.js";
 import { isInFolder } from "./isInFolder.js";
 
 export async function renameInFolder(file, newName, folder = "") {
-  let name = encodeURIComponent(newName.split(".")[0]);
-  let fileName = encodeURIComponent(file);  
+  let name = newName.split(".")[0];
+  let fileName = file;  
   while (await isInFolder(name, folder)) {
     name += "_kopia";
   }

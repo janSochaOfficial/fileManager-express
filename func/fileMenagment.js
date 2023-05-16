@@ -6,3 +6,4 @@ export { newFolder } from "./fileMenagment/newFolder.js";
 export { getFiles } from "./fileMenagment/getFiles.js";
 export { getFolders } from "./fileMenagment/getFolders.js";
 export { renameInFolder } from "./fileMenagment/rename.js";
+export { routeExists } from "./fileMenagment/routeExists.js"

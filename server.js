@@ -14,8 +14,12 @@ import {
   newFolder,
   deleteFile,
   deleteFolder,
+  isInFolder,
+  routeExists
+  
 } from "./func/fileMenagment.js";
 import { rename } from "fs/promises";
+import { normalizeFolderPath } from "./func/helpers/normalizeFolderPath.js";
 
 const app = express();
 const PORT = 3000;
@@ -46,7 +50,9 @@ const context = {
   helpers,
 };
 
-app.get("/", function (req, res) {
+app.get("/", (req, res) => res.redirect("/home"));
+
+app.get("/home", function (req, res) {
   const filePromise = getFiles();
   const folderPromise = getFolders();
   Promise.all([filePromise, folderPromise]).then(([files, folders]) => {
@@ -56,43 +62,90 @@ app.get("/", function (req, res) {
   });
 });
 
+app.get("/home/*", function (req, res) {
+  try {
+    const normalizedFolderPath = normalizeFolderPath(req.params[0])
+    routeExists(normalizedFolderPath).then((inFolder) => {
+      if(!inFolder){
+        res.redirect("/home");
+        return;
+      }
+      const filePromise = getFiles(normalizedFolderPath);
+      const folderPromise = getFolders(normalizedFolderPath);
+      Promise.all([filePromise, folderPromise]).then(([files, folders]) => {
+        context.files = files;
+        context.folders = folders;
+        context.root = normalizedFolderPath;
+        res.render("home.hbs", context);
+      });
+    })
+    
+  }
+  catch {
+    res.redirect("/home");
+  }
+  
+  
+});
+
 app.post("/files/add", function (req, res) {
   const fileName = req.fields.name;
-  newFile(fileName);
-  res.redirect("/");
+  if (!fileName) {
+    res.redirect("/home/" + rootFolder);
+    return;
+  }
+  const rootFolder = req.fields.root;
+
+  newFile(fileName, rootFolder);
+  res.redirect("/home/" + rootFolder);
 });
 
 app.post("/files/delete", function (req, res) {
     const fileName = req.fields.name;
-    deleteFile(fileName);
-    res.redirect("/");
+    const rootFolder = req.fields.root;
+    if (!fileName) {
+      res.redirect("/home/" + rootFolder);
+      return;
+    }
+
+    deleteFile(fileName, rootFolder);
+    res.redirect("/home/" + rootFolder);
 });
 
 app.post("/files/upload", function (req, res) {
     const file = req.files.file;
-    if (file) {
+    const rootFolder = req.fields.root;
+    console.log(`req.fields.root`, req.fields.root);
+    console.log(`rootFolder`,  rootFolder);
+    if (file && file.name) {
         const fileName = file.path.split("\\").pop();
-        renameInFolder(fileName, file.name);
-        res.redirect("/");
+        renameInFolder(fileName, path.join(rootFolder, encodeURIComponent(file.name)));
+        res.redirect("/home/" + rootFolder);
 
     }
     else{
-      res.redirect("/");
+      res.redirect("/home/" + rootFolder);
     }
 });
 
 
 app.post("/folders/add", function (req, res) {
   const folderName = req.fields.name;
-  newFolder(folderName);
-  res.redirect("/");
+  const rootFolder = req.fields.root;
+  if (!folderName) {
+    res.redirect("/home/" + rootFolder);
+    return;
+  }
+  newFolder(folderName, rootFolder);
+  res.redirect("/home/" + rootFolder);
 
 });
 
 app.post("/folders/delete", function (req, res) {
     const folderName = req.fields.name;
-    deleteFolder(folderName);
-    res.redirect("/");
+    const rootFolder = req.fields.root;
+    deleteFolder(folderName, rootFolder);
+    res.redirect("/home/" + rootFolder);
   });
 app.listen(PORT, function () {
   console.log("start serwera na porcie " + PORT, "\nhttp://localhost:" + PORT);
