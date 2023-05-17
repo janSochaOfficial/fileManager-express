@@ -15,15 +15,26 @@
     </form>
   </div>
   <div id="maincontent">
+    <div class="path">
+      {{#each path}}
+        <a href="/{{link}}">{{name}}</a> &gt;
+      {{/each}}
+    </div>
     <div class="folders container">
       {{#each folders}}
         <div class="folder tile">
           <form action="/folders/delete" enctype="multipart/form-data" method="POST">
-            <img src="https://img.icons8.com/fluency-systems-regular/48/null/folder-invoices.png" alt="folder Icon" class="ico" />
+          {{#if ../root}}
+            <a href="/home/{{../root}}/{{name}}">
+          {{else}}
+            <a href="/home/{{name}}">
+          {{/if}}
+              <img src="https://img.icons8.com/fluency-systems-regular/48/null/folder-invoices.png" alt="folder Icon" class="ico" />
+            </a>
             <button type="submit">x</button>
             <p>{{name}}</p>
             <input type="hidden" name="name" value="{{name}}" />
-            <input type="hidden" name="root" value="{{root}}">
+            <input type="hidden" name="root" value="{{../root}}">
 
           </form>
         </div>

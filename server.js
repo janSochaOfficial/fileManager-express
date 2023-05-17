@@ -58,6 +58,7 @@ app.get("/home", function (req, res) {
   Promise.all([filePromise, folderPromise]).then(([files, folders]) => {
     context.files = files;
     context.folders = folders;
+    context.path = [{name: "home", link: "home" }]
     res.render("home.hbs", context);
   });
 });
@@ -65,8 +66,10 @@ app.get("/home", function (req, res) {
 app.get("/home/*", function (req, res) {
   try {
     const normalizedFolderPath = normalizeFolderPath(req.params[0])
+    console.log(`normalizedFolderPath`, normalizedFolderPath);
     routeExists(normalizedFolderPath).then((inFolder) => {
       if(!inFolder){
+        console.log(`no bitches :(`);
         res.redirect("/home");
         return;
       }
@@ -75,8 +78,15 @@ app.get("/home/*", function (req, res) {
       Promise.all([filePromise, folderPromise]).then(([files, folders]) => {
         context.files = files;
         context.folders = folders;
-        context.root = normalizedFolderPath;
-        res.render("home.hbs", context);
+        let route = "home"
+        context.path = [{name: "home", link:"home"}, ...normalizedFolderPath.split("\\").map(el => {
+          route += "/" + el 
+          return {
+            name: decodeURIComponent(el),
+            link: route
+          }
+        })] 
+        res.render("home.hbs", {...context, root: normalizedFolderPath });
       });
     })
     

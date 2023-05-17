@@ -27,11 +27,14 @@
 }
 
 
-.tile button {
-  all: unset;
+.tile button[type=submit] {
   position: absolute;
   top: 0px;
   right: 0px;
+}
+
+.tile button {
+  all: unset;
   font-size: 1rem;
   color: inherit;
   border-radius: 5px;

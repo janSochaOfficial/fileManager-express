@@ -5,5 +5,5 @@ import { uploadPath } from "../../consts/uploadPath.js";
 
 export async function isInFolder(fileName, folderPath = "") {
   const folder = await readdir(path.join(uploadPath, folderPath));
-  return folder.map(e => decodeURIComponent(e)).includes(fileName);
+  return folder.map(e => e).includes(fileName);
 }
