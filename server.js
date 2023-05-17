@@ -3,7 +3,6 @@ import path from "path";
 import exphbs from "express-handlebars";
 import bodyParser from "body-parser";
 import ExpressFormidable from "express-formidable";
-
 import { __dirname, uploadPath } from "./consts/uploadPath.js";
 
 import {
@@ -20,6 +19,7 @@ import {
 } from "./func/fileMenagment.js";
 import { rename } from "fs/promises";
 import { normalizeFolderPath } from "./func/helpers/normalizeFolderPath.js";
+import { renameSync } from "fs";
 
 const app = express();
 const PORT = 3000;
@@ -36,6 +36,7 @@ app.use(
       encoding: "utf-8",
       uploadDir: uploadPath,
       keepExtensions: true,
+      multiples: true
     }
   )
 );
@@ -66,10 +67,8 @@ app.get("/home", function (req, res) {
 app.get("/home/*", function (req, res) {
   try {
     const normalizedFolderPath = normalizeFolderPath(req.params[0])
-    console.log(`normalizedFolderPath`, normalizedFolderPath);
     routeExists(normalizedFolderPath).then((inFolder) => {
       if(!inFolder){
-        console.log(`no bitches :(`);
         res.redirect("/home");
         return;
       }
@@ -101,41 +100,50 @@ app.get("/home/*", function (req, res) {
 app.post("/files/add", function (req, res) {
   const fileName = req.fields.name;
   if (!fileName) {
-    res.redirect("/home/" + rootFolder);
+    res.redirect("/home/" + rootFolder.replace("\\", "/"));
     return;
   }
   const rootFolder = req.fields.root;
 
   newFile(fileName, rootFolder);
-  res.redirect("/home/" + rootFolder);
+  res.redirect("/home/" + rootFolder.replace("\\", "/"));
 });
 
 app.post("/files/delete", function (req, res) {
     const fileName = req.fields.name;
     const rootFolder = req.fields.root;
+
     if (!fileName) {
-      res.redirect("/home/" + rootFolder);
+      res.redirect("/home/" + rootFolder.replace("\\", "/"));
       return;
     }
 
     deleteFile(fileName, rootFolder);
-    res.redirect("/home/" + rootFolder);
+    res.redirect("/home/" + rootFolder.replace("\\", "/"));
 });
 
 app.post("/files/upload", function (req, res) {
     const file = req.files.file;
     const rootFolder = req.fields.root;
-    console.log(`req.fields.root`, req.fields.root);
-    console.log(`rootFolder`,  rootFolder);
-    if (file && file.name) {
+    console.log(rootFolder);
+    if (file.length) {
+      file.forEach((el) => {
+        if (el && el.name) {
+          const fileName = el.path.split("\\").pop();
+          renameInFolder(fileName, path.join(rootFolder, encodeURIComponent(el.name)));
+        }
+      })
+    }
+    else {
+      if (file && file.name) {
         const fileName = file.path.split("\\").pop();
         renameInFolder(fileName, path.join(rootFolder, encodeURIComponent(file.name)));
-        res.redirect("/home/" + rootFolder);
+      }
+    }
+    console.log("/home/" + rootFolder.replace("\\", "/"))
+    res.redirect("/home/" + rootFolder.replace("\\", "/"))
+    // form.parse(req);
 
-    }
-    else{
-      res.redirect("/home/" + rootFolder);
-    }
 });
 
 
@@ -143,11 +151,11 @@ app.post("/folders/add", function (req, res) {
   const folderName = req.fields.name;
   const rootFolder = req.fields.root;
   if (!folderName) {
-    res.redirect("/home/" + rootFolder);
+    res.redirect("/home/" + rootFolder.replace("\\", "/"));
     return;
   }
   newFolder(folderName, rootFolder);
-  res.redirect("/home/" + rootFolder);
+  res.redirect("/home/" + rootFolder.replace("\\", "/"));
 
 });
 
@@ -155,8 +163,19 @@ app.post("/folders/delete", function (req, res) {
     const folderName = req.fields.name;
     const rootFolder = req.fields.root;
     deleteFolder(folderName, rootFolder);
-    res.redirect("/home/" + rootFolder);
+    res.redirect("/home/" + rootFolder.replace("\\", "/"));
   });
+
+  app.post("/folders/rename", function (req, res) {
+    const folderName = req.fields.name;
+    const rootFolder = req.fields.root;
+    const route = rootFolder.split("\\")
+    const oldName = route.pop();
+    renameInFolder(oldName, folderName, path.join(...route))
+    res.redirect("/home/" +  path.join(...route).replace("\\", "/") + "/" + folderName);
+  });
+
+
 app.listen(PORT, function () {
   console.log("start serwera na porcie " + PORT, "\nhttp://localhost:" + PORT);
 });

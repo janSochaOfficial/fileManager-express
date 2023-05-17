@@ -10,6 +10,8 @@ export async function renameInFolder(file, newName, folder = "") {
     name += "_kopia";
   }
   const oldPath = path.join(uploadPath, folder, fileName);
-  const newPath = path.join(uploadPath, folder, name + "." + newName.split(".")[1]);
+  if (newName.split(".")[1])
+    name += "." + newName.split(".")[1]
+  const newPath = path.join(uploadPath, folder, name);
   await rename(oldPath, newPath);
 }

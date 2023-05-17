@@ -7,7 +7,6 @@ export async function routeExists(route) {
     let exists = true;
     let newPath = "";
     for(let folder of folders) {
-        console.log(`folder`, folder);
         if (exists && await isInFolder(folder, newPath)) {
             newPath = path.join(newPath, folder);
         }
