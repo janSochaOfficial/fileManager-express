@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/css/editor.css" />
+
+
+<main>
+  <div id="sidePannel">
+    <div id="tripple-button">
+      <button class="btn" id="font-minus-btn">Font -</button>
+      <button class="btn" id="color-change-btn">Color</button>
+      <button class="btn" id="font-plus-btn">Font +</button>
+    </div>
+    <button class="btn" id="save-settings-btn">Save settings</button>
+    <button class="btn" id="rename-btn">Rename File</button>
+    <a class="btn" href="/inspect/{{filepath}}">Inspect File</a>
+  </div>
+
+  <div id="maincontent">
+    <div class="path">
+      /{{filepath}}
+    </div>
+    <div class="editor">
+        <div id="numbers"></div>
+        <textarea id="text-edit" >
+{{filecontent}}
+        </textarea>
+
+    <button id="save-file-btn" class="btn">Save Changes</button>
+    </div>
+  </div>
+</main>
+
+<script src="/js/editor.js" defer></script>

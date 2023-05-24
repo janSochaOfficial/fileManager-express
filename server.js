@@ -17,9 +17,11 @@ import {
   routeExists
   
 } from "./func/fileMenagment.js";
-import { rename } from "fs/promises";
+import { rename, writeFile } from "fs/promises";
 import { normalizeFolderPath } from "./func/helpers/normalizeFolderPath.js";
 import { renameSync } from "fs";
+import { saveFile } from "./func/fileEditing/saveFile.js";
+import { getFileContent } from "./func/fileEditing/getFileContent.js";
 
 const app = express();
 const PORT = 3000;
@@ -174,6 +176,18 @@ app.post("/folders/delete", function (req, res) {
     renameInFolder(oldName, folderName, path.join(...route))
     res.redirect("/home/" +  path.join(...route).replace("\\", "/") + "/" + folderName);
   });
+   
+  app.get("/editor/*", function (req, res) {
+    getFileContent(req.params[0]).then(content => {
+      res.render("editor.hbs", {...context, filepath: req.params[0], filecontent: content})
+    })
+  })
+
+
+  app.post("save", function (req, res) {
+    saveFile(req.fields.filepath, req.fields.filecontent)
+    res.redirect("/home/" + req.fields.filepath.replace("\\", "/"))
+  })
 
 
 app.listen(PORT, function () {
