@@ -1,6 +1,5 @@
 <link rel="stylesheet" href="/css/editor.css" />
 
-
 <main>
   <div id="sidePannel">
     <div id="tripple-button">
@@ -14,18 +13,32 @@
   </div>
 
   <div id="maincontent">
-    <div class="path">
+    <div class="path" id="file-path">
       /{{filepath}}
     </div>
     <div class="editor">
-        <div id="numbers"></div>
-        <textarea id="text-edit" >
-{{filecontent}}
-        </textarea>
+      <div id="numbers"></div>
+      <textarea id="text-edit">
+        {{filecontent}}
+      </textarea>
 
-    <button id="save-file-btn" class="btn">Save Changes</button>
+      <button id="save-file-btn" class="btn">Save Changes</button>
     </div>
   </div>
+
+  <dialog id="rename-dialog">
+    <form enctype="multipart/form-data" action="/file/rename" method="post">
+      <p>New file Name </p>
+      <input type="text" name="name" />
+      <input type="hidden" name="filepath" value="{{filepath}}" />
+      <button type="submit" class="btn">Ok</button>
+      <button
+        class="btn"
+        id="rename-close-btn"
+        formmethod="dialog"
+      >Cancel</button>
+    </form>
+  </dialog>
 </main>
 
 <script src="/js/editor.js" defer></script>

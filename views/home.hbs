@@ -44,10 +44,15 @@
       {{#each files}}
         <div class="file tile">
           <form action="/files/delete" enctype="multipart/form-data" method="POST">
-          <img />
+          {{#if ../root}}
+            <a href="/editor/{{../root}}/{{name}}">
+          {{else}}
+            <a href="/editor/{{name}}">
+          {{/if}}
             <img src="https://img.icons8.com/fluency-systems-regular/48/000000/{{extention}}.png" alt="File Icon " class="ico" />
-            <button type="submit">x</button>
             <p>{{name}}</p>
+          </a>
+            <button type="submit">x</button>
             <input type="hidden" name="name" value="{{name}}" />
             <input type="hidden" name="root" value="{{../root}}">
           </form>

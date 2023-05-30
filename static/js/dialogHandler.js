@@ -10,7 +10,6 @@ const closeFileBtn = document.getElementById("file-close-btn");
 const closeFolderBtn = document.getElementById("folder-close-btn");
 const closeRenameBtn = document.getElementById("rename-close-btn");
 
-
 newFileBtn.addEventListener("click", () => {
   fileDialog.show();
 });
@@ -33,7 +32,5 @@ closeRenameBtn.addEventListener("click", (e) => {
   renameDialog.close();
   e.preventDefault();
 });
-
-
 
 const fileInput = document.getElementById("file-input");

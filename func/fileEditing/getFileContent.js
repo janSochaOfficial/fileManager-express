@@ -4,6 +4,6 @@ import { uploadPath } from "../../consts/uploadPath.js";
 import { normalizeFolderPath } from "../helpers/normalizeFolderPath.js";
 
 export async function  getFileContent(file, folder = ""){
-        // TODO 
+    file = file.replace("/", "\\");
     return await readFile(path.join(uploadPath, folder, file));
 }
