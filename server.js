@@ -21,7 +21,8 @@ import { normalizeFolderPath } from "./func/helpers/normalizeFolderPath.js";
 import { read, renameSync } from "fs";
 import { saveFile } from "./func/fileEditing/saveFile.js";
 import { getFileContent } from "./func/fileEditing/getFileContent.js";
-import { textExtentions } from "./consts/extentions.js";
+import { textExtentions, imageExtentions } from "./consts/extentions.js";
+import { imageFilters } from "./consts/imageFilters.js";
 
 const app = express();
 const PORT = 3000;
@@ -61,6 +62,7 @@ const helpers = {
 
 const context = {
   helpers,
+  extentions: textExtentions,
 };
 
 app.get("/", (req, res) => res.redirect("/home"));
@@ -110,13 +112,14 @@ app.get("/home/*", function (req, res) {
 
 app.post("/files/add", function (req, res) {
   const fileName = req.fields.name;
+  const extention = req.fields.extention;
   if (!fileName) {
     res.redirect("/home/" + rootFolder.replace("\\", "/"));
     return;
   }
   const rootFolder = req.fields.root;
 
-  newFile(fileName, rootFolder);
+  newFile(fileName, extention, rootFolder);
   res.redirect("/home/" + rootFolder.replace("\\", "/"));
 });
 
@@ -198,6 +201,12 @@ app.get("/editor/*", function (req, res) {
         filecontent: content,
       });
     });
+  } else if (imageExtentions.includes(extention)) {
+    res.render("imageEditor.hbs", {
+      ...context,
+      filters: imageFilters,
+      filepath: req.params[0],
+    });
   } else {
     res.send("No Editor for this file exatention :(");
   }
@@ -235,11 +244,9 @@ app.post("/api/settings", function (req, res) {
   console.log(req.body);
   const preset = req.body;
 
-  saveFile("../data/editorSettings.json", JSON.stringify(preset)).then(
-    () => {
-      res.send();
-    }
-  );
+  saveFile("../data/editorSettings.json", JSON.stringify(preset)).then(() => {
+    res.send();
+  });
 });
 
 app.listen(PORT, function () {

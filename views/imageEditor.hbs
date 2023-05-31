@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="/css/editor.css" />
+<link rel="stylesheet" href="/css/imageEditor.css" />
+
+<main>
+  <div id="sidePannel">
+    <button class="btn" id="rename-btn">Rename File</button>
+    <button class="btn" id="show-menu-btn">Show Filters</button>
+    <a class="btn" href="/inspect/{{filepath}}">Inspect File</a>
+  </div>
+
+  <div id="maincontent">
+    <div class="path" id="file-path">
+      /{{filepath}}
+    </div>
+    <div class="editor">
+        <div id="filter-menu">
+            {{#each filters}}
+                <div data-filter="{{code}}">
+                    <p>{{name}}</p>
+                    <img src="/inspect/{{../filepath}}" alt="{{name}} image" style="filter: {{code}};">
+                </div>
+            {{/each}}
+        </div>
+      <img src="/inspect/{{filepath}}" alt="image" id="image"/>
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+
+  <dialog id="rename-dialog">
+    <form enctype="multipart/form-data" action="/file/rename" method="post">
+      <p>New file Name </p>
+      <input type="text" name="name" />
+      <input type="hidden" name="filepath" value="{{filepath}}" />
+      <button type="submit" class="btn">Ok</button>
+      <button
+        class="btn"
+        id="rename-close-btn"
+        formmethod="dialog"
+      >Cancel</button>
+    </form>
+  </dialog>
+</main>
+
+<script src="/js/editor.js" defer></script>
+<script src="/js/imageEditor.js"></script>
+

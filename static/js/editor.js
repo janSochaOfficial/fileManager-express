@@ -14,6 +14,15 @@ const closeRenameBtn = document.getElementById("rename-close-btn");
 
 let settings = {};
 
+closeRenameBtn.addEventListener("click", (e) => {
+  renameDialog.close();
+  e.preventDefault();
+});
+
+renameBtn.addEventListener("click", () => {
+  renameDialog.show();
+});
+
 function  loadEditorSettings() {
   fetch("/api/settings")
     .then((res) => res.json())
@@ -55,15 +64,6 @@ saveFileBtn.addEventListener("click", () => {
     method: "POST",
     body: fd,
   });
-});
-
-closeRenameBtn.addEventListener("click", (e) => {
-  renameDialog.close();
-  e.preventDefault();
-});
-
-renameBtn.addEventListener("click", () => {
-  renameDialog.show();
 });
 
 

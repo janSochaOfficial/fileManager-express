@@ -2,7 +2,7 @@
 <main>
   <div id="sidePannel">
     <button class="btn" id="new-folder-btn">New Folder</button>
-    <button class="btn" id="new-file-btn">New txt file</button>
+    <button class="btn" id="new-file-btn">New file</button>
     {{#if root}}
     <button class="btn" id="rename-btn">Rename Folder</button>
     {{/if}}
@@ -81,6 +81,11 @@
     <form action="/files/add" enctype="multipart/form-data" method="post">
       <p>Name of new file: </p>
       <input type="text" name="name" />
+      <select name="extention" id="extentnion">
+        {{#each extentions}}
+          <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select>
       <input type="hidden" name="root" value="{{root}}">
       <button type="submit" class="btn">Ok</button>
       <button
