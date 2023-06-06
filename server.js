@@ -23,6 +23,7 @@ import { saveFile } from "./func/fileEditing/saveFile.js";
 import { getFileContent } from "./func/fileEditing/getFileContent.js";
 import { textExtentions, imageExtentions } from "./consts/extentions.js";
 import { imageFilters } from "./consts/imageFilters.js";
+import { saveImage } from "./func/fileEditing/saveImage.js";
 
 const app = express();
 const PORT = 3000;
@@ -44,14 +45,12 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("static"));
 app.use(
-  noApi(
-    ExpressFormidable({
-      encoding: "utf-8",
-      uploadDir: uploadPath,
-      keepExtensions: true,
-      multiples: true,
-    })
-  )
+  ExpressFormidable({
+    encoding: "utf-8",
+    uploadDir: uploadPath,
+    keepExtensions: true,
+    multiples: true,
+  })
 );
 
 const helpers = {
@@ -247,6 +246,12 @@ app.post("/api/settings", function (req, res) {
   saveFile("../data/editorSettings.json", JSON.stringify(preset)).then(() => {
     res.send();
   });
+});
+
+app.post("/api/save-image", function (req, res) {
+  saveImage(req.files["new-image"], req.fields["image-name"])
+
+  res.send();
 });
 
 app.listen(PORT, function () {

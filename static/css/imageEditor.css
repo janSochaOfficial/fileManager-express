@@ -2,13 +2,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     padding-top: 200px;
     position: relative;
+    overflow-x: hidden;
 }
 
 .editor > img {
     position: relative;
-    top: -100px;
+    /* top: -100px; */
+    width: 50%;
 }
 
 #filter-menu {

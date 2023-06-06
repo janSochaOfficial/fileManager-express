@@ -6,6 +6,7 @@
     <button class="btn" id="rename-btn">Rename File</button>
     <button class="btn" id="show-menu-btn">Show Filters</button>
     <a class="btn" href="/inspect/{{filepath}}">Inspect File</a>
+
   </div>
 
   <div id="maincontent">
@@ -22,7 +23,9 @@
             {{/each}}
         </div>
       <img src="/inspect/{{filepath}}" alt="image" id="image"/>
-      <canvas id="canvas"></canvas>
+      <canvas id="canvas" style="display:none;"></canvas>
+    <button class="btn" id="save-image-btn">Save File</button>
+
     </div>
   </div>
 
