@@ -44,12 +44,6 @@ canvas.toBlob(function(blob) {
     method: 'POST',
     body: formData
   })
-    .then(response => {
-      // Handle the response here
-    })
-    .catch(error => {
-      // Handle the error here
-    });
 });
 
 })
