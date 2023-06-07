@@ -3,6 +3,9 @@ import path from "path";
 import exphbs from "express-handlebars";
 import bodyParser from "body-parser";
 import ExpressFormidable from "express-formidable";
+import nocache from "nocache";
+import cookieParser from "cookie-parser";
+
 import { __dirname, uploadPath } from "./consts/uploadPath.js";
 
 import {
@@ -24,6 +27,8 @@ import { getFileContent } from "./func/fileEditing/getFileContent.js";
 import { textExtentions, imageExtentions } from "./consts/extentions.js";
 import { imageFilters } from "./consts/imageFilters.js";
 import { saveImage } from "./func/fileEditing/saveImage.js";
+import { logIn, register } from "./func/userManagment/index.js";
+import { autoLogout } from "./func/helpers/autoLogout.js";
 
 const app = express();
 const PORT = 3000;
@@ -32,18 +37,10 @@ app.set("views", path.join(__dirname, "views")); // ustalamy katalog views
 app.engine("hbs", exphbs({ defaultLayout: "main.hbs" })); // domyślny layout, potem można go zmienić
 app.set("view engine", "hbs"); // określenie nazwy silnika szablonów
 
-function noApi(fn) {
-  return function (req, res, next) {
-    if (req.path.includes("api") && req.method === "POST") {
-      next();
-    } else {
-      fn(req, res, next);
-    }
-  };
-}
+app.use(express.static("static"));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static("static"));
+app.use(nocache());
 app.use(
   ExpressFormidable({
     encoding: "utf-8",
@@ -52,6 +49,8 @@ app.use(
     multiples: true,
   })
 );
+app.use(cookieParser("ASANKARJANAVXUAJSERLK"));
+app.use(autoLogout());
 
 const helpers = {
   compareString: function (p, q, options) {
@@ -64,7 +63,9 @@ const context = {
   extentions: textExtentions,
 };
 
-app.get("/", (req, res) => res.redirect("/home"));
+app.get("/", (req, res) => {
+  res.redirect("/home");
+});
 
 app.get("/home", function (req, res) {
   const filePromise = getFiles();
@@ -249,9 +250,55 @@ app.post("/api/settings", function (req, res) {
 });
 
 app.post("/api/save-image", function (req, res) {
-  saveImage(req.files["new-image"], req.fields["image-name"])
+  saveImage(req.files["new-image"], req.fields["image-name"]);
 
   res.send();
+});
+
+app.get("/login", function (req, res) {
+  if (req.cookies.user) {
+    res.redirect("/home");
+  }
+
+  res.render("login.hbs", context);
+});
+
+app.post("/login", function (req, res) {
+  logIn(req.fields.username, req.fields.password).then((message) => {
+    if (message === "ok") {
+      res.cookie("user", req.fields.username, {
+        signed: true,
+        maxAge: 10 * 60 * 1000,
+        httpOnly: true,
+      });
+      res.redirect("/home");
+    } else {
+      res.render("login.hbs", { ...context, error: message });
+    }
+  });
+});
+
+app.get("/register", function (req, res) {
+  if (req.cookies.user) {
+    res.redirect("/home");
+  }
+
+  res.render("register.hbs", context);
+})
+
+app.post("/register", function (req, res) {
+  register(req.fields.username, req.fields.password, req.fields.passwordconfirm).then((message) => {
+    if (message === "ok") {
+      res.cookie("user", req.fields.username, {
+        signed: true,
+        maxAge: 10 * 60 * 1000,
+        httpOnly: true,
+      });
+      res.redirect("/home");
+    } else {
+      res.render("register.hbs", { ...context, error: message });
+    }
+  });
 });
 
 app.listen(PORT, function () {

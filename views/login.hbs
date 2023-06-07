@@ -1,0 +1,16 @@
+{{#if error}}
+  <div class="error">
+    {{error}}
+  </div>
+{{/if}}
+<h1>LOGIN</h1>
+
+<form action="/login" method="POST" enctype="multipart/form-data">
+  <input type="text" name="username" id="username" />
+  <input type="password" name="password" id="password" />
+  <button type="submit">Log In</button>
+</form>
+
+<p>
+    Don't  have a account? Register <a href="/register">here</a>!
+</p>

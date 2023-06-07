@@ -1,0 +1,13 @@
+{{#if error}}
+  <div class="error">
+    {{error}}
+  </div>
+{{/if}}
+<h1>REGISTER</h1>
+
+<form action="/register" method="POST" enctype="multipart/form-data">
+  <input type="text" name="username" id="username" />
+  <input type="password" name="password" id="password" />
+  <input type="password" name="passwordconfirm" id="passwordconfirm" />
+  <button type="submit">Register</button>
+</form>
