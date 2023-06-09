@@ -40,7 +40,6 @@ app.set("view engine", "hbs"); // określenie nazwy silnika szablonów
 app.use(express.static("static"));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(nocache());
 app.use(
   ExpressFormidable({
     encoding: "utf-8",
@@ -51,6 +50,7 @@ app.use(
 );
 app.use(cookieParser("ASANKARJANAVXUAJSERLK"));
 app.use(autoLogout());
+app.use(nocache());
 
 const helpers = {
   compareString: function (p, q, options) {
@@ -68,13 +68,14 @@ app.get("/", (req, res) => {
 });
 
 app.get("/home", function (req, res) {
-  const filePromise = getFiles();
-  const folderPromise = getFolders();
+  console.log(req.user);
+  const filePromise = getFiles(req.user);
+  const folderPromise = getFolders(req.user);
   Promise.all([filePromise, folderPromise]).then(([files, folders]) => {
     context.files = files;
     context.folders = folders;
     context.path = [{ name: "home", link: "home" }];
-    res.render("home.hbs", context);
+    res.render("home.hbs", { ...context });
   });
 });
 
@@ -86,8 +87,10 @@ app.get("/home/*", function (req, res) {
         res.redirect("/home");
         return;
       }
-      const filePromise = getFiles(normalizedFolderPath);
-      const folderPromise = getFolders(normalizedFolderPath);
+      const filePromise = getFiles(path.join(req.user, normalizedFolderPath));
+      const folderPromise = getFolders(
+        path.join(req.user, normalizedFolderPath)
+      );
       Promise.all([filePromise, folderPromise]).then(([files, folders]) => {
         context.files = files;
         context.folders = folders;
@@ -102,7 +105,10 @@ app.get("/home/*", function (req, res) {
             };
           }),
         ];
-        res.render("home.hbs", { ...context, root: normalizedFolderPath });
+        res.render("home.hbs", {
+          ...context,
+          root: req.user + normalizedFolderPath,
+        });
       });
     });
   } catch {
@@ -119,7 +125,7 @@ app.post("/files/add", function (req, res) {
   }
   const rootFolder = req.fields.root;
 
-  newFile(fileName, extention, rootFolder);
+  newFile(fileName, extention, path.join(req.user, rootFolder));
   res.redirect("/home/" + rootFolder.replace("\\", "/"));
 });
 
@@ -132,20 +138,21 @@ app.post("/files/delete", function (req, res) {
     return;
   }
 
-  deleteFile(fileName, rootFolder);
+  deleteFile(fileName, path.join(req.user, rootFolder));
   res.redirect("/home/" + rootFolder.replace("\\", "/"));
 });
 
 app.post("/files/upload", function (req, res) {
   const file = req.files.file;
   const rootFolder = req.fields.root;
+
   if (file.length) {
     file.forEach((el) => {
       if (el && el.name) {
         const fileName = el.path.split("\\").pop();
         renameInFolder(
           fileName,
-          path.join(rootFolder, encodeURIComponent(el.name))
+          path.join(req.user, rootFolder, encodeURIComponent(el.name))
         );
       }
     });
@@ -154,7 +161,7 @@ app.post("/files/upload", function (req, res) {
       const fileName = file.path.split("\\").pop();
       renameInFolder(
         fileName,
-        path.join(rootFolder, encodeURIComponent(file.name))
+        path.join(req.user, rootFolder, encodeURIComponent(file.name))
       );
     }
   }
@@ -165,18 +172,20 @@ app.post("/files/upload", function (req, res) {
 app.post("/folders/add", function (req, res) {
   const folderName = req.fields.name;
   const rootFolder = req.fields.root;
+
   if (!folderName) {
     res.redirect("/home/" + rootFolder.replace("\\", "/"));
     return;
   }
-  newFolder(folderName, rootFolder);
+  newFolder(folderName, path.join(req.user, rootFolder));
   res.redirect("/home/" + rootFolder.replace("\\", "/"));
 });
 
 app.post("/folders/delete", function (req, res) {
   const folderName = req.fields.name;
   const rootFolder = req.fields.root;
-  deleteFolder(folderName, rootFolder);
+
+  deleteFolder(folderName, path.join(req.user, rootFolder));
   res.redirect("/home/" + rootFolder.replace("\\", "/"));
 });
 
@@ -194,7 +203,7 @@ app.post("/folders/rename", function (req, res) {
 app.get("/editor/*", function (req, res) {
   const extention = req.params[0].split(".").pop();
   if (textExtentions.includes(extention)) {
-    getFileContent(req.params[0]).then((content) => {
+    getFileContent(path.join(req.user, req.params[0])).then((content) => {
       res.render("editor.hbs", {
         ...context,
         filepath: req.params[0],
@@ -213,13 +222,16 @@ app.get("/editor/*", function (req, res) {
 });
 
 app.post("/save", function (req, res) {
-  saveFile(req.fields.filepath, req.fields.filecontent).then(() => {
+  saveFile(
+    path.join(req.user, req.fields.filepath),
+    req.fields.filecontent
+  ).then(() => {
     res.send();
   });
 });
 
 app.get("/inspect/*", function (req, res) {
-  const filepath = req.params[0].replace("/", "\\");
+  const filepath = path.join(req.user, req.params[0].replace("/", "\\"));
   res.sendFile(path.join(uploadPath, filepath));
 });
 
@@ -229,7 +241,7 @@ app.post("/file/rename", function (req, res) {
   root.pop();
   root = root.join("/");
   const newname = req.fields.name;
-  renameInFolder(filepath, newname).then(() => {
+  renameInFolder(filepath, path.join(req.user, newname)).then(() => {
     res.redirect("/editor/" + root + "/" + newname);
   });
 });
@@ -250,13 +262,16 @@ app.post("/api/settings", function (req, res) {
 });
 
 app.post("/api/save-image", function (req, res) {
-  saveImage(req.files["new-image"], req.fields["image-name"]);
+  saveImage(
+    req.files["new-image"],
+    path.join(req.user, req.fields["image-name"])
+  );
 
   res.send();
 });
 
 app.get("/login", function (req, res) {
-  if (req.cookies.user) {
+  if (req.signedCookies.user) {
     res.redirect("/home");
   }
 
@@ -284,21 +299,32 @@ app.get("/register", function (req, res) {
   }
 
   res.render("register.hbs", context);
-})
+});
 
 app.post("/register", function (req, res) {
-  register(req.fields.username, req.fields.password, req.fields.passwordconfirm).then((message) => {
+  console.log(req.fields)
+  register(
+    req.fields.username,
+    req.fields.password,
+    req.fields.passwordconfirm
+  ).then((message) => {
     if (message === "ok") {
       res.cookie("user", req.fields.username, {
         signed: true,
         maxAge: 10 * 60 * 1000,
         httpOnly: true,
       });
+      newFolder(req.fields.username);
       res.redirect("/home");
     } else {
       res.render("register.hbs", { ...context, error: message });
     }
   });
+});
+
+app.get("/logout", function (req, res) {
+  res.clearCookie("user");
+  res.redirect("/login");
 });
 
 app.listen(PORT, function () {

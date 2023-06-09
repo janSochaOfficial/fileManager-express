@@ -62,6 +62,7 @@ saveFileBtn.addEventListener("click", () => {
 
   fetch("/save", {
     method: "POST",
+    credentials: 'include',
     body: fd,
   });
 });

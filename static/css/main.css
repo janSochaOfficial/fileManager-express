@@ -37,3 +37,15 @@ main {
   color: lightcoral;
   scale: 1.02;
 }
+
+.logForm > *{
+  display: block;
+}
+
+.logForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}

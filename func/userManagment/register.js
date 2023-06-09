@@ -6,7 +6,7 @@ export async function register(username, password, passwordConfirm) {
   if (await userExists(username)) {
     return "Username alredy taken!!";
   }
-  if (password == passwordConfirm) {
+  if (password !== passwordConfirm) {
     return "Passwords do not match!!";
   }
 

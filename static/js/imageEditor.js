@@ -41,6 +41,7 @@ canvas.toBlob(function(blob) {
   formData.append('image-name', image.src.split('inspect/').pop());
 
   fetch('/api/save-image', {
+    credentials: "include",
     method: 'POST',
     body: formData
   })
